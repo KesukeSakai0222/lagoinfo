@@ -1,0 +1,29 @@
+{% extends 'muta/base.html' %}
+
+{% block title %}
+<title>らごインフォ</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <a>らごインフォは<a class="keyword" href="https://uzurainfo.han-be.com/" target="_blank">うずらインフォ</a>に次ぐアニメ情報一覧画像生成サイトです．<br/></a>
+</div>
+
+<div class="container">
+  <a>表示するシーズンを選択してください．<br/></a>
+  <select name='select-anime-season'>
+    {% for s in seasons_list %}
+      {%if this_season == s.value%}
+        <option value={{s.value}} selected>{{s.name}}</option>
+      {%else%}
+        <option value={{s.value}}>{{s.name}}</option>
+      {%endif%}
+    {%endfor%}
+  </select>
+</div>
+
+<div class="container">
+
+</div>
+
+{%endblock%}

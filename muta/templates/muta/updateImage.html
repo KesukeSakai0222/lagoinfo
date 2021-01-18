@@ -1,0 +1,25 @@
+{% extends 'muta/base.html' %}
+
+{%block title%}
+<title>らごインフォ | 画像更新</title>
+{% endblock %}
+
+{%block content%}
+<div class="container">
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    画像を更新するシーズンを選択してください．
+  </button>
+    <div class="dropdown-menu" aria-labelledby="select-season">
+      {% for s in seasons_list %}
+        <a class="dropdown-item"  href={%url 'updateImage'　s.year s.season%}>{{s.name}}</a>
+      {%endfor%}
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+</div>
+
+{%endblock%}
