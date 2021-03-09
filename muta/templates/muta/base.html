@@ -3,7 +3,7 @@
 <html lang='ja'>
   <head>
     <meta charset="utf-8">
-    <meta content="IE=edge" http-equiv="X-UA-Compatible" /><!--IEを使うものを呪う-->
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% block title %}{% endblock %}
     <meta name='description' content='らごインフォはアニメ一覧サイトです。画像を出力＆共有ができます。'>
@@ -69,6 +69,7 @@
           <h6>Anime List</h6>
           <ul>
             <li><a href='{% url 'index' %}'>今期アニメ</a></li>
+            <li><a href='{% url 'allSeasons' %}'>シーズン一覧</a></li>
           </ul>
         </div>
         <div class='col-6 col-md'>

@@ -37,18 +37,12 @@ class AnimeListView(generic.TemplateView):
         return response
 
 class AllSeasons(generic.TemplateView):
-    template_name = 'muta/all_seasons.html'
-    context_object_name = 'all_seasons'
+    template_name = 'muta/allSeasons.html'
+    context_object_name = 'allSeasons'
 
     def get_context_data(self, **kwargs):
         ssn = get_seasons(2000)
-        if self.kwargs.get('season_year') is not None and self.kwargs.get('season_name') is not None:
-            year = self.kwargs.get('season_year')
-            season = self.kwargs.get('season_name')
-        else:
-            (year, season) = get_this_season()
-        wrk = Work.objects.select_related('channel').prefetch_related('staff').prefetch_related('cast').filter(season_year=year, season_name=season.upper(), media__in=['TV', 'WEB'])
-        context = {"seasons_list" : ssn, "season":SEASONS_JP[SEASONS.index(season)], "season_en":season, "year":year, "works" : wrk}
+        context = {"seasons_list" : ssn}
         return context
 
 

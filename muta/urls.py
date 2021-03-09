@@ -9,6 +9,7 @@ urlpatterns = [
     path('form/', views.FormView.as_view(), name='form'),
     path('malLogin/', views.MalLogin.as_view(), name='malLogin'),
     path('auth/', views.Authorize.as_view(), name='authorize'),
+    path('allSeasons/', views.AllSeasons.as_view(), name='allSeasons'),
     path('updateImage/', views.UpdateImageView.as_view(), name='updateImageHub'),
     path('updateImage/<int:season_year>/<str:season_name>', views.UpdateImageView.as_view(), name='updateImage'),
 ]
