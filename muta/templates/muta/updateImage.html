@@ -5,21 +5,27 @@
 {% endblock %}
 
 {%block content%}
-<div class="container">
+<div class="container-fluid">
   <div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    画像を更新するシーズンを選択してください．
-  </button>
-    <div class="dropdown-menu" aria-labelledby="select-season">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+      画像を更新するシーズンを選択してください．
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
       {% for s in seasons_list %}
-        <a class="dropdown-item"  href={%url 'updateImage'　s.year s.season%}>{{s.name}}</a>
+        <li><a class="dropdown-item"  href={%url "updateImage" s.year s.season %}>{{s.name}}</a></li>
       {%endfor%}
-    </div>
+    </ul>
   </div>
 </div>
 
-<div class="container">
 
+<div class="container-fluid">
+  <table class="table">
+      <tr><th>year</th><th>season</th><th>update_at</th></tr>
+      {% for iut in update_tran|dictsort:"id" reversed %}
+          <tr><td>{{iut.season_year}}</td><td>{{iut.season_name}}</td><td>{{iut.update_at}}</td></tr>
+      {% endfor %}
+  </table>
 </div>
 
 {%endblock%}

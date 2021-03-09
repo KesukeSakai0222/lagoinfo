@@ -8,51 +8,35 @@
 <div class="container">
 <h4>FAQ</h4>
 <p>何分個人で開発しているもので全ての質問に回答することが難しいので，FAQをご一読してからフォームを送信してもらえるとありがたいです．</P>
-<div class='accordion' id='accordion'>
-  <div class="accordion-item">
-        <h3 id="accordion-heading-one" class="d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#accordion-collapse-one" aria-expanded="true" aria-controls="accordion-collapse-one">
-            データが間違っている，または古いので更新してほしい
-            <span class="accordion-icon">&#10005;</span>
-        </h3>
-        <div id="accordion-collapse-one" class="collapse show" aria-labelledby="accordion-heading-one" data-parent="#accordion">
-            <div class="px-3 pb-3">
-              当サイトでは<a class="keyword" href='https://annict.jp/' target="_blank">Annict</a>様のデータをAPIを通して日次で反映しております．
-              ですので，訂正事項がありましたらAnnict様の提供する<a class="keyword" href='https://annict.jp/db' target="_blank">Annict DB</a>にてデータの編集・登録をしていただければと思います．
-              一日経ってAnnict様で更新されているのに，らごインフォで更新されていないということであれば不具合なのでお手数ですがフォームよりご連絡ください．
-            </div>
-        </div>
-        <div class="accordion-item">
-        <h3 id="accordion-heading-two" class="collapsed rounded d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#accordion-collapse-two" aria-expanded="true" aria-controls="accordion-collapse-two">
-            画像を挿入してほしい
-            <span class="accordion-icon">&#10005;</span>
-        </h3>
-        <div id="accordion-collapse-two" class="collapse" aria-labelledby="accordion-heading-two" data-parent="#accordion">
-            <div class="px-3 pb-3">
-                画像は<a class="keyword" href="https://myanimelist.net/" target="_blank">MyAnimeList</a>様のデータをAPIを通して反映しております．
-                手動で認証して更新しているため，もしMyAnimeListに画像があるのに更新されていないということでしたら，忘れているだけの可能性が高いので<a class="keyword" href="https://twitter.com/lagopus_info" target="_blank">Twitter</a>等で一声かけていただくと更新すると思います．
-            </div>
-        </div>
-    </div>
-    <div class="accordion-item">
-        <h3 id="accordion-heading-three" class="collapsed rounded d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#accordion-collapse-three" aria-expanded="true" aria-controls="accordion-collapse-three">
-            資金を援助したい
-            <span class="accordion-icon">&#10005;</span>
-        </h3>
-        <div id="accordion-collapse-three" class="collapse" aria-labelledby="accordion-heading-three" data-parent="#accordion">
-            <div class="px-3 pb-3">
-                できればデータ提供元であるAnnict様の<a class="keyword" href="https://annict.jp/supporters" target="_blank">Annictサポーター</a>をご支援いただけるとこのサイトも続けられます．
-                また，今後らごインフォのサーバー代を賄うのに邪魔にならない程度の広告は付けるかもしれません．
-            </div>
-        </div>
-    </div>
-    </div>
-</div>
+
+<div class="container">
+    <h5>データが間違っている，または古いので更新してほしい</h5>
+    <p>当サイトでは<a class="keyword" href='https://annict.jp/' target="_blank">Annict</a>様のデータをAPIを通して日次で反映しております．(今年と来年分)<br>
+    訂正事項がありましたらAnnict様の提供する<a lass="keyword" href='https://annict.jp/forum/categories/db_request' target='_blank'>Annict Forum編集リクエスト</a>にてデータの編集申請をしてください．<br>
+    Annict DBで昨年以前のデータを更新した場合は，フォームよりご連絡ください．</br>
+    今年，又は来年の作品のデータを更新し，Annict様で更新されて1日経っているのにらごインフォで更新されていないということであれば不具合の可能性が高いのでお手数ですがフォームよりご連絡ください．
+    </p>
+    <h5>画像を挿入してほしい</h5>
+        <p>画像は<a class="keyword" href='https://annict.jp/' target="_blank">Annict</a>様に登録されている<a class="keyword" href="https://myanimelist.net/" target="_blank">MyAnimeList</a>様のID(MyAnimeListID)を基にMyAnimeList様のAPIを通して反映しております．<br>
+        画像を挿入したい場合は，まずAnnictの作品ページからMyAnimeListと紐づいていることを確認し，紐づいていなければAnnict様の提供する<a lass="keyword" href='https://annict.jp/forum/categories/db_request' target='_blank'>Annict Forum編集リクエスト</a>にてデータの編集申請にてMyAnimeListIDの登録をしてください．<br>
+        Oauth認証の関係上手動で更新しているため，MyAnimeListIDが紐づいているのに更新されていないということでしたら，<a class="keyword" href="https://twitter.com/lagopus_info" target="_blank">Twitter</a>等で一声かけていただくと更新すると思います．
+        </p>
+    <h5>画像切れてませんか？</h5>
+        ごめんなさい仕様です．<br>
+        元の大きさの画像を使ってしまうと画像の範囲が広くなってしまって一覧性が下がるのでこういう処理を取っています．<br>
+        もうちょっと上手くトリミングできるような実装をしてもいいかなとは思っているので，何か良い方法があったら教えてください．
+        </p>
+    <h5>動画配信サービスの変更をしてほしい</h5>
+        <p>動画配信サービスは<a class="keyword" href='https://annict.jp/' target="_blank">Annict</a>様に登録されている放送予定をAPIを通して取得しております．<br>
+        放送予定に動画サービスが追加されていればアクティブになりますが，過去の作品は現状更新が難しい状態です．<br>
+        Annict様で動画配信サービスのURL提供APIの開発予定があるとかないとか耳にしたので一緒に気長に待ちましょう(人任せ)．
+        </p>
 </div>
 
 <div class='container'>
 <h4>お問い合わせ</h4>
-以下のフォームよりお問い合わせください．<br/>
-お問い合わせ内容は個人を特定できないようにしたうえでFAQに追加する可能性があります．ご了承ください．
+<p>以下のフォームよりお問い合わせください．<br/>
+お問い合わせ内容は個人を特定できないようにしたうえでFAQに追加する可能性があります．ご了承ください．<p/>
 <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfGLPdfglRj_xKSLcDJJyJHmvLcq1p0BmWsJTvPmFMkP68e1g/viewform?embedded=true" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
 </div>
 

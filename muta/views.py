@@ -1,38 +1,55 @@
 from django.shortcuts import render, get_list_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.views import generic
-from muta.models import Work
+from muta.models import Work, Staff, Cast, Channel, ImageUpdateTran
+from muta.utils import get_this_season, get_seasons
 from django.shortcuts import redirect
 from oauthlib.oauth2 import WebApplicationClient
 from muta.consts import SEASONS, SEASONS_JP, SEASONS_LIST, MAL_CONSTS
 import datetime
+import time
 import random, string, urllib, json
 
-class IndexView(generic.TemplateView):
+class IndexView(generic.View):
+    def get(self, request, *args, **kwargs):
+        (year, season) = get_this_season()
+        return redirect('/' + str(year) + '/' + season)
+
+class AnimeListView(generic.TemplateView):
     template_name = 'muta/index.html'
     context_object_name = 'index'
 
     def get_context_data(self, **kwargs):
-        ssn = []
-        today = datetime.date.today()
-        for y in reversed(range(2016, today.year+2)):
-            for i in range(3, -1, -1):
-                ssn.append({'name':str(y) + '年' + SEASONS_JP[i] + 'アニメ',
-                    'year':y,
-                    'season':SEASONS[i]})
-        if today.month == 12:
-            selected = str(today.year + 1) + '-' + SEASONS_LIST[today.month - 1]
+        ssn = get_seasons(datetime.date.today().year-2)
+        if self.kwargs.get('season_year') is not None and self.kwargs.get('season_name') is not None:
+            year = self.kwargs.get('season_year')
+            season = self.kwargs.get('season_name')
         else:
-            selected = str(today.year) + '-' + SEASONS_LIST[today.month - 1]
-
-        
-        context = {"seasons_list" : ssn, "this_season":selected}
+            (year, season) = get_this_season()
+        wrk = Work.objects.select_related('channel').prefetch_related('staff').prefetch_related('cast').filter(season_year=year, season_name=season.upper(), media__in=['TV', 'WEB'])
+        context = {"seasons_list" : ssn, "season":SEASONS_JP[SEASONS.index(season)], "season_en":season, "year":year, "works" : wrk}
         return context
 
+    def get(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        response = self.render_to_response(context)
+        response['Access-Control-Allow-Origin'] = 'https://myanimelist.net/'
+        return response
 
-class AnimeListView(generic.ListView):
-    def animeList(request, season_year, season_name):
-        return HttpResponse(request, 'muta/index.html', {})
+class AllSeasons(generic.TemplateView):
+    template_name = 'muta/all_seasons.html'
+    context_object_name = 'all_seasons'
+
+    def get_context_data(self, **kwargs):
+        ssn = get_seasons(2000)
+        if self.kwargs.get('season_year') is not None and self.kwargs.get('season_name') is not None:
+            year = self.kwargs.get('season_year')
+            season = self.kwargs.get('season_name')
+        else:
+            (year, season) = get_this_season()
+        wrk = Work.objects.select_related('channel').prefetch_related('staff').prefetch_related('cast').filter(season_year=year, season_name=season.upper(), media__in=['TV', 'WEB'])
+        context = {"seasons_list" : ssn, "season":SEASONS_JP[SEASONS.index(season)], "season_en":season, "year":year, "works" : wrk}
+        return context
 
 
 class Oauth(object):
@@ -74,12 +91,15 @@ class Oauth(object):
         Oauth.refersh_token = data['refresh_token']
     
     def get_anime_image(self, mal_anime_id):
-        url = MAL_CONSTS['api_base_url'] + str(mal_anime_id) + '?fields=main_picture'
+        url = MAL_CONSTS['api_base_url'] + 'anime/' + str(mal_anime_id) + '?fields=main_picture'
         url, headers, body = Oauth.oauth.add_token(url)
         req = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(req) as res:
+        try:
+            res = urllib.request.urlopen(req)
             data = json.load(res)
-        return data['main_picture']['medium']
+            return data['main_picture']['large']
+        except:
+            return ''    
 
     def randomname(self, n):
         randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
@@ -108,34 +128,44 @@ class UpdateImageView(generic.View, Oauth):
         if not self.has_access_token():
             redirect('/login')
         if self.kwargs.get('season_year') is not None and self.kwargs.get('season_name') is not None:
+            if (self.kwargs.get('season_name') not in SEASONS and self.kwargs.get('season_name') != 'all') or not 2000 <= self.kwargs.get('season_year') <= datetime.date.today().year + 2:
+                raise Http404("validation error")
             self.refresh_token()
             year = self.kwargs.get('season_year')
             season = self.kwargs.get('season_name').upper()
-            self.get_and_save_images(year, season)
+            if season == 'ALL':
+                self.get_and_save_all_images()
+            else:
+                self.get_and_save_images(year, season)
         context = self.get_context_data()
         return render(request, 'muta/updateImage.html', context)
 
     def get_context_data(self, **kwargs):
-        ssn = []
-        today = datetime.date.today()
-        for y in reversed(range(2000, today.year+2)):
-            for i in range(3, -1, -1):
-                ssn.append({'name':str(y) + '年' + SEASONS_JP[i] + 'アニメ',
-                    'year':y,
-                    'season':SEASONS[i]})
-        if today.month == 12:
-            selected = str(today.year + 1) + '-' + SEASONS_LIST[today.month - 1]
-        else:
-            selected = str(today.year) + '-' + SEASONS_LIST[today.month - 1]
-        context = {"seasons_list" : ssn, "this_season":selected}
+        ssn = get_seasons(2000)
+        ssn.append({'name':'全件更新',
+            'year':2000,
+            'season':'all'
+        })
+        iut = ImageUpdateTran.objects.all()
+        context = {"seasons_list" : ssn, 'update_tran': iut}
         return context
     
     def get_and_save_images(self, year, season):
+        season_dict = {'OTHER':0, 'WINTER':1, 'SPRING':2, 'SUMMER':3, 'AUTUMN':4}
         work_list = Work.objects.filter(season_year=year, season_name=season)
         for w in work_list:
             if w.mal_anime_id is not None:
                 w.image_url = self.get_anime_image(w.mal_anime_id)
                 w.save()
+        iut = ImageUpdateTran(id=year*10+season_dict[season], season_name=season, season_year=year, update_at=datetime.datetime.now())
+        iut.save()
+
+    def get_and_save_all_images(self):
+        today = datetime.date.today()
+        for y in reversed(range(2000, today.year+2)):
+            for i in range(3, -1, -1):
+                self.get_and_save_images(y, SEASONS[i].upper())
+                time.sleep(10)
 
 
 class PrivacyView(generic.TemplateView):

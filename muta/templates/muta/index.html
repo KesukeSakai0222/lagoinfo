@@ -1,29 +1,195 @@
 {% extends 'muta/base.html' %}
-
+{% load static %}
 {% block title %}
 <title>らごインフォ</title>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <a>らごインフォは<a class="keyword" href="https://uzurainfo.han-be.com/" target="_blank">うずらインフォ</a>に次ぐアニメ情報一覧画像生成サイトです．<br/></a>
+<div class="container-fluid">
+  <a>らごインフォはアニメ情報一覧画像生成サイトです．<br/></a>
 </div>
 
-<div class="container">
-  <a>表示するシーズンを選択してください．<br/></a>
-  <select name='select-anime-season'>
-    {% for s in seasons_list %}
-      {%if this_season == s.value%}
-        <option value={{s.value}} selected>{{s.name}}</option>
-      {%else%}
-        <option value={{s.value}}>{{s.name}}</option>
-      {%endif%}
-    {%endfor%}
-  </select>
+<div class="container-fluid">
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+      表示するシーズンを選択してください．
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      {% for s in seasons_list %}
+        <li><a class="dropdown-item"  href={%url "animeList" s.year s.season %}>{{s.name}}</a></li>
+      {%endfor%}
+    </ul>
+  </div>
 </div>
 
-<div class="container">
-
+<div class="container-fluid">
+  <div class='row align-items-stretch animelist' id='animelist'>
+  <div class='col-6 col-sm-4 col-md-3 col-lg-2'>
+      <div class="card">
+        <a target="_blank">
+          <img class="card-img-top lagoinfo-card-img" src={% static 'muta/image/icon.png' %} alt="no image">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex">
+            <span class="badge bg-dark">メディア</span>
+            <a href="https://annict.jp" target='_blank'>
+              <img class='annict-logo' src="{% static 'muta/image/annict_logo.png' %}" alt="">
+            </a>
+          </div>
+          <div class="card-title">
+            <h2>{{year}}年{{season}}アニメ</h2>
+          </div>
+          <div class='streaming-services'>
+            <h6>Streaming Services</h6>
+            <div class='d-flex justify-content-around'>
+              <a href='https://www.b-ch.com/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/bandai_channel.jpg' %}">
+              </a>
+              <a href='https://ch.nicovideo.jp/portal/anime' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/nicoch-logo.svg' %}">
+              </a>
+              <a href='https://anime.dmkt-sp.jp/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/danime.jpg' %}">
+              </a>
+              <a href='https://abema.tv/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/abema.jpg' %}">
+              </a>
+              <a href='https://www.amazon.co.jp/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/primevideo.jpg' %}">
+              </a>
+              <a href='https://www.netflix.com/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/netflix.jpg' %}">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% for w in works|dictsort:'title' %}
+    <div class='col-6 col-sm-4 col-md-3 col-lg-2'>
+      <div class="card">
+        {% if w.image_url %}
+        <a {% if w.official_site_url %}href="{{w.official_site_url}}" target="_blank"{%endif%}>
+          <img class="card-img-top" crossOrigin="anonymous" src={{w.image_url}} alt={{w.title}}>
+        </a>
+        {% else %}
+        <a {% if w.official_site_url %}href="{{w.official_site_url}}" target="_blank"{%endif%}>
+          <img class="card-img-top nothing-img" src={% static 'muta/image/no_image.png'%} alt="no image" href={{w.official_site_url}}>
+        </a>
+        {% endif %}
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex">
+            <span class="badge bg-dark">{{w.get_media_display}}</span>
+            <a href="https://annict.jp/works/{{w.annict_id}}" target='_blank'>
+              <img class='annict-logo' src="{% static 'muta/image/annict_logo.png' %}" alt="">
+            </a>
+          </div>
+          <div class="card-title">
+            <h5>{{w.title}}</h5>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h6>Cast</h6>
+              <ul class="list-unstyled cast">
+                {% for c in w.cast.all|dictsort:"sort_number"|slice:':10' %}
+                <a href='https://annict.jp/people/{{c.annict_id}}' target='_blank' title={{c.character_name}}>
+                  <li>{{c.name| truncatechars:30}}</li>
+                </a>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="col">
+              <h6>Animation</h6>
+              <ul class='list-unstyled animation'>
+              {% for s in w.staff.all|dictsort:"sort_number" %}
+              {% ifequal s.role_text 'アニメーション制作'%}
+              <a href="https://annict.jp/organizations/{{s.annict_id}}" target='_blank'>
+                <li>{{s.name}}</li>
+              </a>
+              {% endifequal %}
+              {% endfor %}
+              </ul>
+              <h6>Staff</h6>
+              <ul class="list-unstyled staff">
+                {% for s in w.staff.all|dictsort:"sort_number"|slice:':7' %}
+                {% if s.role_text != 'アニメーション制作' %}
+                <a href='https://annict.jp/{% ifequal s.type_name 'Person'%}people{%else%}organizations{%endifequal%}/{{s.annict_id}}' target='_blank' title={{s.role_text}}>
+                  <li>{{s.name| truncatechars:30}}</li>
+                </a>
+                {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+          <div class='streaming-services'>
+            <h6>Streaming Services</h6>
+            <div class='d-flex justify-content-around'>
+              {% ifequal w.channel.b_ch_flag 1 %}
+              <a href='https://www.b-ch.com/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/bandai_channel.jpg' %}">
+              </a>
+              {% else %}
+              <img class='streaming-service-inactive' src="{% static 'muta/image/bandai_channel.jpg' %}">
+              {% endifequal %}
+              {% ifequal w.channel.n_ch_flag 1 %}
+              <a href='https://ch.nicovideo.jp/portal/anime' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/nicoch-logo.svg' %}">
+              </a>
+              {% else %}
+              <img class='streaming-service-inactive' src="{% static 'muta/image/nicoch-logo.svg' %}">
+              {% endifequal %}
+              {% ifequal w.channel.d_anime_flag 1 %}
+              <a href='https://anime.dmkt-sp.jp/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/danime.jpg' %}">
+              </a>
+              {% else %}
+              <img class='streaming-service-inactive' src="{% static 'muta/image/danime.jpg' %}">
+              {% endifequal %}
+              {% ifequal w.channel.abema_flag 1 %}
+              <a href='https://abema.tv/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/abema.jpg' %}">
+              </a>
+              {% else %}
+              <img class='streaming-service-inactive' src="{% static 'muta/image/abema.jpg' %}">
+              {% endifequal %}
+              {% ifequal w.channel.amazon_prime_flag 1 %}
+              <a href='https://www.amazon.co.jp/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/primevideo.jpg' %}">
+              </a>
+              {% else %}
+              <img class='streaming-service-inactive' src="{% static 'muta/image/primevideo.jpg' %}">
+              {% endifequal %}
+              {% ifequal w.channel.netflix_flag 1 %}
+              <a href='https://www.netflix.com/' target='_blank'>
+                <img class='streaming-service-active' src="{% static 'muta/image/netflix.jpg' %}">
+              </a>
+              {% else %}
+              <img class='streaming-service-inactive' src="{% static 'muta/image/netflix.jpg' %}">
+              {% endifequal %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+      <h4>シーズンに登録されているアニメが存在しません</h4>
+    {% endfor %}
+  </div>
+  </div>
 </div>
+<a href="" id="screan_shot" download="animeList.png">画像をダウンロード</a>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script>
+  window.onload = function(){
+      html2canvas(document.getElementById("animelist"),{
+        proxy: true,
+        useCORS: true,
+        onrendered: function(canvas){
+          var imgData = canvas.toDataURL();
+          document.getElementById("screan_shot").href = imgData;
+        }
+      });
+  }
+</script>
 {%endblock%}
