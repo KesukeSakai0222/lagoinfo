@@ -18,7 +18,4 @@ from django.urls import include,path
 
 urlpatterns = [
     path('', include('muta.urls'), name='index'),
-    path('admin/', admin.site.urls),
-
-
 ]

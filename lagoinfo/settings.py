@@ -144,3 +144,5 @@ LOGGING = {
 CORS_ORIGIN_WHITELIST = [
     'https://myanimelist.net',
 ]
+
+ALLOWED_IP_BLOCKS = ['116.64.255.189', ]
