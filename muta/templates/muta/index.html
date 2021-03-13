@@ -1,7 +1,7 @@
 {% extends 'muta/base.html' %}
 {% load static %}
 {% block title %}
-<title>らごインフォ</title>
+<title>らごインフォ｜{{year}}年{{season}}アニメ</title>
 {% endblock %}
 
 {% block content %}
@@ -177,7 +177,12 @@
   </div>
   </div>
 </div>
-<a href="" id="screan_shot" download="animeList.png">画像をダウンロード</a>
+
+<button type="button" class="btn btn-outline-primary btn-lg" id='download_button'>
+  <a href="" id="screan_shot" download="animeList.png">一覧画像をダウンロード</a>
+</button>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-hashtags="らごインフォ" data-related="lagopus_info" data-show-count="false">Tweet</a>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script>

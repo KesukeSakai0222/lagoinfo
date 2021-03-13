@@ -20,7 +20,7 @@ class Work(models.Model):
     official_site_url_en = models.URLField(default='')
     season_year = models.IntegerField(default=1900)
     season_name = models.CharField(max_length=6, choices=SEASONS, default='OTHER')
-    image_url = models.URLField(default='')
+    image_url = models.URLField(null=True)
     def __str__(self):
         return str(self.annict_id) + ':' + self.title
 

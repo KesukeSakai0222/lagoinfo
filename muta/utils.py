@@ -62,15 +62,15 @@ def run_annict_query(param)->list:
 
 def save_annict_response(res)->bool:
     for node in res:
-        w = Work(annict_id = node['annictId'],
-            mal_anime_id = node['malAnimeId'],
-            title = node['title'],
-            title_en = node['titleEn'],
-            media = node['media'],
-            official_site_url = node['officialSiteUrl'],
-            official_site_url_en = node['officialSiteUrlEn'],
-            season_year = node['seasonYear'],
-            season_name = node['seasonName'])
+        w, created = Work.objects.get_or_create(annict_id = node['annictId'])
+        w.mal_anime_id = node['malAnimeId']
+        w.title = node['title']
+        w.title_en = node['titleEn']
+        w.media = node['media']
+        w.official_site_url = node['officialSiteUrl']
+        w.official_site_url_en = node['officialSiteUrlEn']
+        w.season_year = node['seasonYear']
+        w.season_name = node['seasonName']
         w.save()
         for cast in node['casts']['nodes']:
             c = Cast(id = cast['id'],

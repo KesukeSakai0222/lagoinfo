@@ -1,0 +1,15 @@
+{% extends 'muta/base.html' %}
+{% load static %}
+{% block title %}
+<title>らごインフォ｜シーズン一覧</title>
+{% endblock %}
+
+
+{% block content %}
+<h3 class='season-list-title'>シーズン一覧</h3>
+<ul class="seasons">
+    {% for s in seasons_list %}
+    <li><a class="season"  href={%url "animeList" s.year s.season %}>{{s.name}}</a></li>
+    {%endfor%}
+</ul>
+{%endblock%}

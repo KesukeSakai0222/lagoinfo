@@ -7,7 +7,7 @@ body {
     min-height: 100vh;
 }
 .animelist {
-    margin-bottom: 5rem;
+    margin-bottom: 1rem;
 }
 .card {
     width: 100%;
@@ -71,6 +71,10 @@ a:link, a:visited {
     object-fit: cover;
     opacity: 0.1
 }
+#download_button {
+    display: inline-block;
+    margin-bottom: 1rem;
+}
 
 .footer-content {
     margin-top: 1rem;
@@ -81,4 +85,11 @@ a:link, a:visited {
 }
 li {
     list-style: none;
+}
+
+.season-list-title {
+    text-align: center;
+}
+.seasons {
+    text-align: center;
 }
