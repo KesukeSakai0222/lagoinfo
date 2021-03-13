@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&(+(xzn2_ta!ab%#lh^=y1q*qs2qx0$wbc-s)gdibnk)625_1j'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'lagoinfo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'splite3',
+        'NAME': 'db.splite3',
     }
 }
 
@@ -145,4 +146,7 @@ CORS_ORIGIN_WHITELIST = [
     'https://myanimelist.net',
 ]
 
-ALLOWED_IP_BLOCKS = ['116.64.255.189', '127.0.0.1']
+ALLOWED_IP_BLOCKS = [
+    os.environ.get('ADMIN_IP'),
+    '127.0.0.1',
+]
