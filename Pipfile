@@ -9,6 +9,7 @@ django-cors-headers = "*"
 requests = "*"
 oauthlib = "*"
 whitenoise = "*"
+django-heroku = "*"
 
 [dev-packages]
 
