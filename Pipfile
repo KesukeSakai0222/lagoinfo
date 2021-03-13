@@ -10,6 +10,7 @@ requests = "*"
 oauthlib = "*"
 whitenoise = "*"
 django-heroku = "*"
+tqdm = "*"
 
 [dev-packages]
 
