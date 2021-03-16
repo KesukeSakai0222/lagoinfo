@@ -1,11 +1,12 @@
 import requests
 import datetime
+import os
 from muta.models import Work, Cast, Staff, Channel
 from muta.consts import SEASONS_LIST, SEASONS_JP, SEASONS
 
 ANNICT_BASE_URL:str = 'https://api.annict.com/graphql'
 REQ_HEADER:dict = {'Authorization': 
-            'bearer CZVYjeehMP8vRvbzwAk1Ct0s4VYglahtBOibYhb2HME'}
+            'bearer ' + os.environ.get('ANNICT_CLIENT_SECRET')}
 ANNICT_QUERY:str = """query {
     searchWorks(seasons:[%s]) {
         nodes {
