@@ -78,13 +78,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lagoinfo.wsgi.application'
 
+# Activate Django-Heroku.
+SECURE_SSL_REDIRECT = True
+django_heroku.settings(locals(
+    default='postgres://jkyzqgkwjhwxpf:446e5688414ab270555608464762f91a3bd0cd84b24740148ad487fc3419ddb8@ec2-54-237-143-127.compute-1.amazonaws.com:5432/d9lpvatjqcd41d'
+))
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-db_from_env = dj_database_url.config()
 DATABASES = {
     'default': dj_database_url.config()
 }
+db_from_env = dj_database_url.config()
 
 
 # Password validation
@@ -151,6 +156,3 @@ ALLOWED_IP_BLOCKS = [
     os.environ.get('ADMIN_IP'),
     '127.0.0.1',
 ]
-
-# Activate Django-Heroku.
-django_heroku.settings(locals())
