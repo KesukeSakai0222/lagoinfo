@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['lagoinfo.herokuapp.com',
     'lagoinfo.com',
@@ -35,7 +35,7 @@ ALLOWED_HOSTS = ['lagoinfo.herokuapp.com',
 # Application definition
 
 INSTALLED_APPS = [
-    'muta.apps.MutaConfig',
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'muta.apps.MutaConfig',
 ]
 
 MIDDLEWARE = [
@@ -77,10 +78,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'lagoinfo.wsgi.application'
-
-# Activate Django-Heroku.
-SECURE_SSL_REDIRECT = True
-django_heroku.settings(locals())
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -125,12 +122,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -156,3 +147,13 @@ ALLOWED_IP_BLOCKS = [
     os.environ.get('ADMIN_IP'),
     '127.0.0.1',
 ]
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.1/howto/static-files/
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Activate Django-Heroku.
+SECURE_SSL_REDIRECT = True
+django_heroku.settings(locals())
