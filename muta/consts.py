@@ -15,5 +15,5 @@ MAL_CONSTS = {
     'authorize_url'     :'https://myanimelist.net/v1/oauth2/authorize',
     'api_base_url'      :'https://api.myanimelist.net/v2/',
     'client_kwargs'     : {'code_challenge_method':'plain'},
-    'redirect_url'      :'https://lagoinfo.herokuapp.com/auth/'
+    'redirect_url'      :'http://lagoinfo.herokuapp.com/auth/'
 }
