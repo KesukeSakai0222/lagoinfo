@@ -8,7 +8,6 @@ SEASONS_JP:list = ['冬', '春', '夏', '秋']
 
 # MyAnimeList
 MAL_BASE_URL = 'https://myanimelist.net/'
-MAL_CLIENT_ID:str = os.environ.get('MAL_CLIENT_ID')
 MAL_CONSTS = {
     'client_id'         :os.environ.get('MAL_CLIENT_ID'),
     'client_secret'     :os.environ.get('MAL_CLIENT_SECRET'),
@@ -16,5 +15,5 @@ MAL_CONSTS = {
     'authorize_url'     :'https://myanimelist.net/v1/oauth2/authorize',
     'api_base_url'      :'https://api.myanimelist.net/v2/',
     'client_kwargs'     : {'code_challenge_method':'plain'},
-    'redirect_url'      :'http://127.0.0.1:8000/auth/'
+    'redirect_url'      :'https://lagoinfo.herokuapp.com/auth/'
 }
