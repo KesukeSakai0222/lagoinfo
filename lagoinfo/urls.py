@@ -13,8 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import include,path
+import muta.views
+
+handler500 = views.my_customized_server_error
 
 urlpatterns = [
     path('', include('muta.urls'), name='index'),

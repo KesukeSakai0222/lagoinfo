@@ -3,8 +3,6 @@ from .decorators import ip_checker
 
 from . import views
 
-handler500 = views.my_customized_server_error
-
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('<int:season_year>/<str:season_name>/', views.AnimeListView.as_view(), name='animeList'),
