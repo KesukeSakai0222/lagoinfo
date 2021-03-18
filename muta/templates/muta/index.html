@@ -2,6 +2,10 @@
 {% load static %}
 {% block title %}
 <title>らごインフォ｜{{year}}年{{season}}アニメ</title>
+<meta property="og:type" content="website">
+<meta property="og:image" content="{% static 'muta/image/icon.png' %}">
+<meta property="og:site_name" content="らごインフォ｜{{year}}年{{season}}アニメ">
+<meta property="og:url" content="{% url 'animeList' {{year}} {{season_en}} %}">
 {% endblock %}
 
 {% block content %}
