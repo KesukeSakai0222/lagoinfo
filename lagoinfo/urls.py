@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import include,path
-import muta.views
+from muta import views
 
 handler500 = views.my_customized_server_error
 

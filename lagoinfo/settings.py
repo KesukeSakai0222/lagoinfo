@@ -17,6 +17,7 @@ import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+environment = os.environ.get('env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -27,9 +28,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.herokuapp.com',
-    'lagoinfo.com',
-    ]
+if environment == 'DEV':
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = ['.herokuapp.com',
+        'lagoinfo.com',
+        ]
 
 
 # Application definition
@@ -81,12 +85,20 @@ WSGI_APPLICATION = 'lagoinfo.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://jkyzqgkwjhwxpf:446e5688414ab270555608464762f91a3bd0cd84b24740148ad487fc3419ddb8@ec2-54-237-143-127.compute-1.amazonaws.com:5432/d9lpvatjqcd41d'
-    )
-}
-db_from_env = dj_database_url.config()
+if environment == 'DEV':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.splite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='postgres://jkyzqgkwjhwxpf:446e5688414ab270555608464762f91a3bd0cd84b24740148ad487fc3419ddb8@ec2-54-237-143-127.compute-1.amazonaws.com:5432/d9lpvatjqcd41d'
+        )
+    }
+    db_from_env = dj_database_url.config()
 
 
 # Password validation
@@ -151,9 +163,13 @@ ALLOWED_IP_BLOCKS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# Activate Django-Heroku.
-SECURE_SSL_REDIRECT = True
-django_heroku.settings(locals())
+# Activate Django-Heroku
+if environment == 'PRD':
+    SECURE_SSL_REDIRECT = True
+    django_heroku.settings(locals())
+else:
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SECURE_SSL_REDIRECT = False
