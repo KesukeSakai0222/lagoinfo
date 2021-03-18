@@ -3,6 +3,8 @@ from .decorators import ip_checker
 
 from . import views
 
+handler500 = views.my_customized_server_error
+
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('<int:season_year>/<str:season_name>/', views.AnimeListView.as_view(), name='animeList'),
@@ -14,5 +16,3 @@ urlpatterns = [
     path('updateImage/', ip_checker(views.UpdateImageView.as_view()), name='updateImageHub'),
     path('updateImage/<int:season_year>/<str:season_name>', ip_checker(views.UpdateImageView.as_view()), name='updateImage'),
 ]
-
-handler500 = views.my_customized_server_error
