@@ -14,3 +14,5 @@ urlpatterns = [
     path('updateImage/', ip_checker(views.UpdateImageView.as_view()), name='updateImageHub'),
     path('updateImage/<int:season_year>/<str:season_name>', ip_checker(views.UpdateImageView.as_view()), name='updateImage'),
 ]
+
+handler500 = views.my_customized_server_error
