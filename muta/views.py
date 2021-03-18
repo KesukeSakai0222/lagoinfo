@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_list_or_404
 from django.http import HttpResponse, Http404
 from django.views import generic
+from django.views.decorators.csrf import requires_csrf_token
 from muta.models import Work, Staff, Cast, Channel, ImageUpdateTran
 from muta.utils import get_this_season, get_seasons
 from django.shortcuts import redirect
