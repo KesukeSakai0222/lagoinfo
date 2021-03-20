@@ -173,7 +173,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 # Activate Django-Heroku
 if environment == 'PRD':
     SECURE_SSL_REDIRECT = True
-    django_heroku.settings(locals())
+    django_heroku.settings(locals(), logging=False)
 else:
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
