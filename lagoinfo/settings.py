@@ -95,7 +95,7 @@ if environment == 'DEV':
 else:
     DATABASES = {
         'default': dj_database_url.config(
-            default='78be574eee5cc3f55f21c75194f88ce612a326d9f7ba75cfac97b922fedadc21@ec2-52-205-3-3.compute-1.amazonaws.com')
+            default='postgresql://78be574eee5cc3f55f21c75194f88ce612a326d9f7ba75cfac97b922fedadc21@ec2-52-205-3-3.compute-1.amazonaws.com')
     }
     db_from_env = dj_database_url.config()
 
