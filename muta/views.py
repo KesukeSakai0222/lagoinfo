@@ -9,6 +9,7 @@ from oauthlib.oauth2 import WebApplicationClient
 from muta.consts import SEASONS, SEASONS_JP, SEASONS_LIST, MAL_CONSTS
 import datetime
 import time
+import logging
 import random, string, urllib, json
 
 class IndexView(generic.View):
@@ -66,6 +67,9 @@ class Oauth(object):
         return url
     
     def get_token(self, cd:str):
+        logger = logging.getLogger('lagologger')
+        logger.info('request_token url:{}'.format(MAL_CONSTS['request_token_url']))
+        logger.info('client_secret:{}'.format(MAL_CONSTS['client_secret']))
         url, headers, body = Oauth.oauth.prepare_token_request(
             MAL_CONSTS['request_token_url'],
             client_secret=MAL_CONSTS['client_secret'],

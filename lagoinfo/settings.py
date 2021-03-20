@@ -148,6 +148,10 @@ LOGGING = {
             'level': 'INFO',
             'handlers': ['console'],
         },
+        'lagologger': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        },
     }
 }
 
