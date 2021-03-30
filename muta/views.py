@@ -7,6 +7,8 @@ from muta.utils import get_this_season, get_seasons
 from django.shortcuts import redirect
 from oauthlib.oauth2 import WebApplicationClient
 from muta.consts import SEASONS, SEASONS_JP, SEASONS_LIST, MAL_CONSTS
+from rq import Queue
+from worker import conn
 import datetime
 import time
 import logging
@@ -98,7 +100,7 @@ class Oauth(object):
             data = json.load(res)
             return data['main_picture']['large']
         except:
-            return ''    
+            return ''
 
     def randomname(self, n):
         randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
@@ -132,10 +134,11 @@ class UpdateImageView(generic.View, Oauth):
             self.refresh_token()
             year = self.kwargs.get('season_year')
             season = self.kwargs.get('season_name').upper()
+            q = Queue(connection=conn)
             if season == 'ALL':
-                self.get_and_save_all_images()
+                r = q.enqueue(UpdateImageView.get_and_save_all_images)
             else:
-                self.get_and_save_images(year, season)
+                r = q.enqueue(UpdateImageView.get_and_save_images, year, season)
         context = self.get_context_data()
         return render(request, 'muta/updateImage.html', context)
 
@@ -149,6 +152,7 @@ class UpdateImageView(generic.View, Oauth):
         context = {"seasons_list" : ssn, 'update_tran': iut}
         return context
     
+    @classmethod
     def get_and_save_images(self, year, season):
         season_dict = {'OTHER':0, 'WINTER':1, 'SPRING':2, 'SUMMER':3, 'AUTUMN':4}
         work_list = Work.objects.filter(season_year=year, season_name=season)
@@ -159,6 +163,7 @@ class UpdateImageView(generic.View, Oauth):
         iut = ImageUpdateTran(id=year*10+season_dict[season], season_name=season, season_year=year, update_at=datetime.datetime.now())
         iut.save()
 
+    @classmethod
     def get_and_save_all_images(self):
         today = datetime.date.today()
         for y in reversed(range(2000, today.year+2)):
