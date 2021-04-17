@@ -11,8 +11,9 @@ oauthlib = "*"
 whitenoise = "*"
 django-heroku = "*"
 tqdm = "*"
-rq = "*"
 redis = "*"
+celery = "*"
+rq = "*"
 
 [dev-packages]
 

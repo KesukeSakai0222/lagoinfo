@@ -195,7 +195,7 @@
         proxy: true,
         useCORS: true,
         onrendered: function(canvas){
-          var imgData = canvas.toDataURL();
+          var imgData = canvas.toDataURL('image/png');
           document.getElementById("screan_shot").href = imgData;
         }
       });

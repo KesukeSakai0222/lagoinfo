@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseServerError
 from django.views import generic
 from django.views.decorators.csrf import requires_csrf_token
 from muta.models import Work, Staff, Cast, Channel, ImageUpdateTran
-from muta.utils import get_this_season, get_seasons
+from muta.utils import get_this_season, get_seasons, get_and_save_images, get_and_save_all_images
 from django.shortcuts import redirect
 from oauthlib.oauth2 import WebApplicationClient
 from muta.consts import SEASONS, SEASONS_JP, SEASONS_LIST, MAL_CONSTS
@@ -57,6 +57,9 @@ class Oauth(object):
     access_token = ''
     refresh_token = ''
 
+    def __init__(self):
+        Oauth.oauth = WebApplicationClient(MAL_CONSTS['client_id'], redirect_uri=MAL_CONSTS['redirect_url'])
+
     def make_random_str(self):
         Oauth.state = self.randomname(32)
         Oauth.code_challenge = self.randomname(128)
@@ -90,17 +93,6 @@ class Oauth(object):
             data = Oauth.oauth.parse_request_body_response(res.read())
         Oauth.access_token = data['access_token']
         Oauth.refersh_token = data['refresh_token']
-    
-    def get_anime_image(self, mal_anime_id):
-        url = MAL_CONSTS['api_base_url'] + 'anime/' + str(mal_anime_id) + '?fields=main_picture'
-        url, headers, body = Oauth.oauth.add_token(url)
-        req = urllib.request.Request(url, headers=headers)
-        try:
-            res = urllib.request.urlopen(req)
-            data = json.load(res)
-            return data['main_picture']['large']
-        except:
-            return ''
 
     def randomname(self, n):
         randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
@@ -134,11 +126,11 @@ class UpdateImageView(generic.View, Oauth):
             self.refresh_token()
             year = self.kwargs.get('season_year')
             season = self.kwargs.get('season_name').upper()
-            q = Queue(connection=conn)
+            q = Queue(connection=conn, default_timeout=3600)
             if season == 'ALL':
-                r = q.enqueue(UpdateImageView.get_and_save_all_images)
+                r = q.enqueue(get_and_save_all_images, self.oauth)
             else:
-                r = q.enqueue(UpdateImageView.get_and_save_images, year, season)
+                r = q.enqueue(get_and_save_images, self.oauth, year, season)
         context = self.get_context_data()
         return render(request, 'muta/updateImage.html', context)
 
@@ -151,25 +143,6 @@ class UpdateImageView(generic.View, Oauth):
         iut = ImageUpdateTran.objects.all()
         context = {"seasons_list" : ssn, 'update_tran': iut}
         return context
-    
-    @classmethod
-    def get_and_save_images(self, year, season):
-        season_dict = {'OTHER':0, 'WINTER':1, 'SPRING':2, 'SUMMER':3, 'AUTUMN':4}
-        work_list = Work.objects.filter(season_year=year, season_name=season)
-        for w in work_list:
-            if w.mal_anime_id is not None:
-                w.image_url = self.get_anime_image(w.mal_anime_id)
-                w.save()
-        iut = ImageUpdateTran(id=year*10+season_dict[season], season_name=season, season_year=year, update_at=datetime.datetime.now())
-        iut.save()
-
-    @classmethod
-    def get_and_save_all_images(self):
-        today = datetime.date.today()
-        for y in reversed(range(2000, today.year+2)):
-            for i in range(3, -1, -1):
-                self.get_and_save_images(y, SEASONS[i].upper())
-                time.sleep(10)
 
 
 class PrivacyView(generic.TemplateView):

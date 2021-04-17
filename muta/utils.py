@@ -1,8 +1,10 @@
 import requests
 import datetime
 import os
-from muta.models import Work, Cast, Staff, Channel
-from muta.consts import SEASONS_LIST, SEASONS_JP, SEASONS
+import json, urllib, time, pytz
+from tqdm import tqdm
+from muta.models import Work, Cast, Staff, Channel, ImageUpdateTran
+from muta.consts import SEASONS_LIST, SEASONS_JP, SEASONS, MAL_CONSTS
 
 ANNICT_BASE_URL:str = 'https://api.annict.com/graphql'
 REQ_HEADER:dict = {'Authorization': 
@@ -133,3 +135,32 @@ def get_seasons(start_year)->list:
                 'year':y,
                 'season':SEASONS[i]})
     return ssn
+
+def get_anime_image(oauth, mal_anime_id):
+    url = MAL_CONSTS['api_base_url'] + 'anime/' + str(mal_anime_id) + '?fields=main_picture'
+    url, headers, body = oauth.add_token(url)
+    req = urllib.request.Request(url, headers=headers)
+    try:
+        res = urllib.request.urlopen(req)
+        data = json.load(res)
+        return data['main_picture']['large']
+    except:
+        return ''
+
+def get_and_save_images(oauth, year, season)->None:
+    season_dict = {'OTHER':0, 'WINTER':1, 'SPRING':2, 'SUMMER':3, 'AUTUMN':4}
+    work_list = Work.objects.filter(season_year=year, season_name=season)
+    for w in work_list:
+        if w.mal_anime_id is not None:
+            w.image_url = get_anime_image(oauth, w.mal_anime_id)
+            time.sleep(1)
+            w.save()
+    iut = ImageUpdateTran(id=year*10+season_dict[season], season_name=season, season_year=year, update_at=datetime.datetime.now(pytz.timezone('Asia/Tokyo')))
+    iut.save()
+
+def get_and_save_all_images(oauth):
+    today = datetime.date.today()
+    for y in tqdm(reversed(range(2000, today.year+2))):
+        for i in range(3, -1, -1):
+            get_and_save_images(oauth, y, SEASONS[i].upper())
+            time.sleep(10)
