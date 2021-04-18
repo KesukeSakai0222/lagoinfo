@@ -154,7 +154,8 @@ def get_and_save_images(oauth, year, season)->None:
         if w.mal_anime_id is not None:
             w.image_url = get_anime_image(oauth, w.mal_anime_id)
             time.sleep(1)
-            w.save()
+            if w.image_url != '':
+                w.save()
     iut = ImageUpdateTran(id=year*10+season_dict[season], season_name=season, season_year=year, update_at=datetime.datetime.now(pytz.timezone('Asia/Tokyo')))
     iut.save()
 

@@ -126,7 +126,7 @@ class UpdateImageView(generic.View, Oauth):
             self.refresh_token()
             year = self.kwargs.get('season_year')
             season = self.kwargs.get('season_name').upper()
-            q = Queue(connection=conn, default_timeout=3600)
+            q = Queue(connection=conn, default_timeout=7200)
             if season == 'ALL':
                 r = q.enqueue(get_and_save_all_images, self.oauth)
             else:
