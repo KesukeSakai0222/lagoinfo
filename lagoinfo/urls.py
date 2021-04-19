@@ -16,7 +16,7 @@ Including another URLconf
 from django.urls import include,path
 from muta import views
 
-handler500 = views.my_customized_server_error
+# handler500 = views.my_customized_server_error
 
 urlpatterns = [
     path('', include('muta.urls'), name='index'),
