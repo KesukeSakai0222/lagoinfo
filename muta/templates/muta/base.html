@@ -6,6 +6,9 @@
     <meta content="IE=edge" http-equiv="X-UA-Compatible" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% block title %}{% endblock %}
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ request.get_host }}{% static 'muta/image/icon.png' %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta name='description' content='らごインフォはアニメ一覧サイトです。画像を出力＆共有ができます。'>
     <meta name='keywords' content='らごインフォ,アニメ,一覧,2021年,共有,アニメ 一覧,春アニメ,夏アニメ,秋アニメ,冬アニメ,来期 アニメ,うずらインフォ,Twitter'>
     <meta name="twitter:card" content="summary">
