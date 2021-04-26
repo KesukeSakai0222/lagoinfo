@@ -126,11 +126,13 @@ class UpdateImageView(generic.View, Oauth):
             self.refresh_token()
             year = self.kwargs.get('season_year')
             season = self.kwargs.get('season_name').upper()
-            q = Queue(connection=conn, default_timeout=7200)
+            # q = Queue(connection=conn, default_timeout=7200)
             if season == 'ALL':
-                r = q.enqueue(get_and_save_all_images, self.oauth)
+                get_and_save_all_images.delay(self.oauth)
+                # r = q.enqueue(get_and_save_all_images, self.oauth)
             else:
-                r = q.enqueue(get_and_save_images, self.oauth, year, season)
+                get_and_save_images.delay(self.oauth, year, season)
+                # r = q.enqueue(get_and_save_images, self.oauth, year, season)
         context = self.get_context_data()
         return render(request, 'muta/updateImage.html', context)
 

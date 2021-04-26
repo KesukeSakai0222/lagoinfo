@@ -2,6 +2,7 @@ import requests
 import datetime
 import os
 import json, urllib, time, pytz
+from django_rq import job
 from tqdm import tqdm
 from muta.models import Work, Cast, Staff, Channel, ImageUpdateTran
 from muta.consts import SEASONS_LIST, SEASONS_JP, SEASONS, MAL_CONSTS
@@ -147,6 +148,7 @@ def get_anime_image(oauth, mal_anime_id):
     except:
         return ''
 
+@job
 def get_and_save_images(oauth, year, season)->None:
     season_dict = {'OTHER':0, 'WINTER':1, 'SPRING':2, 'SUMMER':3, 'AUTUMN':4}
     work_list = Work.objects.filter(season_year=year, season_name=season)
@@ -159,6 +161,7 @@ def get_and_save_images(oauth, year, season)->None:
     iut = ImageUpdateTran(id=year*10+season_dict[season], season_name=season, season_year=year, update_at=datetime.datetime.now(pytz.timezone('Asia/Tokyo')))
     iut.save()
 
+@job
 def get_and_save_all_images(oauth):
     today = datetime.date.today()
     for y in tqdm(reversed(range(2000, today.year+2))):
