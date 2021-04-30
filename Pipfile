@@ -12,8 +12,7 @@ whitenoise = "*"
 django-heroku = "*"
 tqdm = "*"
 redis = "*"
-celery = "*"
-rq = "*"
+django-rq = "*"
 
 [dev-packages]
 

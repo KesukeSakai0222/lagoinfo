@@ -46,8 +46,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'django_rq',
     'muta.apps.MutaConfig',
 ]
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'PASSWORD': '',
+        'DEFAULT_TIMEOUT': 7200,
+        'URL': os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0'),
+    },
+}
+RQ_API_TOKEN = os.environ.get('RQ_API_TOKEN')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
